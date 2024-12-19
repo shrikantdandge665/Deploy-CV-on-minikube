@@ -87,7 +87,7 @@ pipeline {
                     git config user.name "Shrikant Dandge"  
                     BUILD_NUMBER=${BUILD_NUMBER}
                     sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" manifests/deployment.yml
-                    git add manifests/deployment.yml
+                    git add .
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                 '''

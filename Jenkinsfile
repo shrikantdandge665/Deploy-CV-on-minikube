@@ -76,18 +76,4 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            echo "Pipeline completed successfully!"
-        }
-        failure {
-            echo "Pipeline failed!"
-        }
-        always {
-            script {
-                // Archive reports (optional)
-                archiveArtifacts artifacts: 'trivy-report.html, **/dependency-check-report.xml', allowEmptyArchive: true
-            }
-        }
-    }
 }

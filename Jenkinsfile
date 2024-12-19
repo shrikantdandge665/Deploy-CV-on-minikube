@@ -33,6 +33,12 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_AUTH_TOKEN')]) {
                     sh '''
+                    # Download and install sonar-scanner
+                    wget -qO- https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip | funzip > sonar-scanner.zip
+                    mkdir -p sonar-scanner && unzip sonar-scanner.zip -d sonar-scanner
+                    export PATH=$PWD/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin:$PATH
+                    
+                    # Run sonar-scanner
                     sonar-scanner \
                     -Dsonar.projectKey=CV-minikube \
                     -Dsonar.projectName=CV-minikube \

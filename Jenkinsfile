@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {  
+     docker {
+      image 'shrikantdandge7/flask-cv-agent:latest'
+      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+    }
+  }
 
     environment {
         SCANNER_HOME = tool 'sonar'

@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = "shrikantdandge7/cv-minikube:${BUILD_NUMBER}"
+        PATH = "$PATH:/var/lib/jenkins/.local/bin" // Add this line to include the directory in PATH
     }
 
     stages {
@@ -13,7 +14,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh 'pip install --user -r requirements.txt' // Use --user to install in user directory
             }
         }
 

@@ -26,7 +26,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar-server') { // Replace 'sonar-server' with your SonarQube server name
+                withSonarQubeEnv('sonar-server') { // 'sonar-server' should match your Jenkins configuration
                     sh '''
                     sonar-scanner \
                     -Dsonar.projectKey=CV-minikube \
@@ -49,7 +49,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                withDockerRegistry(credentialsId: 'docker-cred') { // Replace 'docker-cred' with your Docker Hub credentials ID
+                withDockerRegistry(url: 'https://index.docker.io/v1/', credentialsId: 'docker-cred') { // Replace with your registry URL and credentials ID
                     sh "docker build -t $DOCKER_IMAGE ."
                 }
             }
@@ -63,7 +63,7 @@ pipeline {
 
         stage('Docker Image Push') {
             steps {
-                withDockerRegistry(credentialsId: 'docker-cred') {
+                withDockerRegistry(url: 'https://index.docker.io/v1/', credentialsId: 'docker-cred') { // Replace with your registry URL and credentials ID
                     sh "docker push $DOCKER_IMAGE"
                 }
             }

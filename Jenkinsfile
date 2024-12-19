@@ -21,7 +21,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh 'python -m unittest discover'
-                sh 'coverage run -m unittest discover && coverage xml'
+                sh 'coverage run -m unittest discover'
+                sh 'coverage xml -o ./coverage.xml'
             }
         }
 

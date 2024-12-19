@@ -26,7 +26,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonar-server') { // 'sonar-server' should match your Jenkins configuration
+                withSonarQubeEnv('sonar-server') { // Replace 'sonar-server' with your SonarQube server name
                     sh '''
                     sonar-scanner \
                     -Dsonar.projectKey=CV-minikube \
@@ -49,7 +49,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                withDockerRegistry(credentialsId: 'docker-cred') { // Replace 'docker-cred' with your credentials ID
+                withDockerRegistry(credentialsId: 'docker-cred') { // Replace 'docker-cred' with your Docker Hub credentials ID
                     sh "docker build -t $DOCKER_IMAGE ."
                 }
             }

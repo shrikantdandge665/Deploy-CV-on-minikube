@@ -7,7 +7,7 @@ pipeline {
   }
 
     environment {
-        SCANNER_HOME = tool 'sonar'
+        SCANNER_HOME = tool 'sonar-scanner'
         DOCKER_IMAGE = "shrikantdandge7/cv-minikube:${BUILD_NUMBER}"
     }
 
@@ -33,7 +33,7 @@ pipeline {
                 script {
                     withSonarQubeEnv('sonar-server') { // Replace 'sonar-server' with your configured SonarQube server name
                         sh '''
-                        $SCANNER_HOME/bin/sonar \
+                        $SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.projectKey=CV-minikube \
                         -Dsonar.projectName=CV-minkube \
                         -Dsonar.sources=./ \

@@ -8,6 +8,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "shrikantdandge7/cv-minikube:${BUILD_NUMBER}"
+        SCANNER_HOME= tool 'sonar-scanner'
     }
 
     stages {
@@ -28,7 +29,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonar-server') { // 'sonar-server' should match your Jenkins configuration
                     sh '''
-                    sonar-scanner \
+                    $SCANNER_HOME/bin/sonar-scanner \
                     -Dsonar.projectKey=CV-minikube \
                     -Dsonar.projectName=CV-minikube \
                     -Dsonar.sources=. \

@@ -1,11 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'shrikantdandge7/flask-cv-agent:latest'
-            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
-
+    agent any
     environment {
         DOCKER_IMAGE = "shrikantdandge7/cv-minikube:${BUILD_NUMBER}"
     }

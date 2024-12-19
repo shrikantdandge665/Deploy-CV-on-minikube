@@ -94,5 +94,12 @@ pipeline {
             }
         }
     }
+
+    stage('Cleanup Workspace') {
+        steps {
+        deleteDir() // This cleans up the workspace
+        }
+    }
+    
     }
 }

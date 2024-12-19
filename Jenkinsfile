@@ -73,5 +73,25 @@ pipeline {
                 }
             }
         }
+
+        stage('Update Deployment File') {
+        environment {
+            GIT_REPO_NAME = "Deploy-CV-on-minikube"
+            GIT_USER_NAME = "shrikantdandge665
+        }
+        steps {
+            withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                sh '''
+                    git config user.email "shrikantdandge665@gmail.com"
+                    git config user.name "Shrikant Dandge"  
+                    BUILD_NUMBER=${BUILD_NUMBER}
+                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" Deploy-CV-on-minikube/manifests/deployment.yml
+                    git add Deploy-CV-on-minikube/manifests/deployment.yml
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                '''
+            }
+        }
+    }
     }
 }

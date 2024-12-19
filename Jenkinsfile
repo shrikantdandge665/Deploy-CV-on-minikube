@@ -37,7 +37,8 @@ pipeline {
                     -Dsonar.projectName=CV-minikube \
                     -Dsonar.sources=. \
                     -Dsonar.python.coverage.reportPaths=coverage.xml \
-                    -Dsonar.host.url=${SONAR_URL}
+                    -Dsonar.host.url=${SONAR_URL} \
+                    -X
                     '''
                 }
             }

@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        SCANNER_HOME = tool 'sonar-scanner'
+        SCANNER_HOME = tool 'sonar'
         DOCKER_IMAGE = "shrikantdandge7/cv-minikube:${BUILD_NUMBER}"
     }
 

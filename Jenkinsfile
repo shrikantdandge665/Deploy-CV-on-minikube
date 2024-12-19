@@ -33,7 +33,7 @@ pipeline {
                 script {
                     withSonarQubeEnv('sonar-server') { // Replace 'sonar-server' with your configured SonarQube server name
                         sh '''
-                        $SCANNER_HOME/bin/sonar-scanner \
+                        $SCANNER_HOME/bin/sonar \
                         -Dsonar.projectKey=CV-minikube \
                         -Dsonar.projectName=CV-minkube \
                         -Dsonar.sources=./ \

@@ -3,6 +3,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = "shrikantdandge7/cv-minikube:${BUILD_NUMBER}"
         PATH = "$PATH:/var/lib/jenkins/.local/bin" // Add this line to include the directory in PATH
+        SCANNER_HOME= tool 'sonar-scanner'
+        SONAR_URL = "http://localhost:9000"
     }
 
     stages {
@@ -27,27 +29,17 @@ pipeline {
         }
 
         stage('Static Code Analysis') {
-            environment {
-                SONAR_URL = "http://localhost:9000"
-            }
             steps {
-                withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_AUTH_TOKEN')]) {
+                withSonarQubeEnv(credentialsId: 'sonar') {
+                    #Run sonar-scanner
                     sh '''
-                    # Download and install sonar-scanner
-                    wget -qO- https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip | funzip > sonar-scanner.zip
-                    mkdir -p sonar-scanner && unzip sonar-scanner.zip -d sonar-scanner
-                    export PATH=$PWD/sonar-scanner/sonar-scanner-5.0.1.3006-linux/bin:$PATH
-                    
-                    # Run sonar-scanner
-                    sonar-scanner \
+                    $SCANNER_HOME/bin/sonar-scanner \
                     -Dsonar.projectKey=CV-minikube \
                     -Dsonar.projectName=CV-minikube \
                     -Dsonar.sources=. \
                     -Dsonar.python.coverage.reportPaths=coverage.xml \
-                    -Dsonar.host.url=${SONAR_URL} \
-                    -Dsonar.login=$SONAR_AUTH_TOKEN
+                    -Dsonar.host.url=${SONAR_URL}
                     '''
-                }
             }
         }
 

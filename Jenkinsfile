@@ -3,7 +3,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "shrikantdandge7/cv-minikube:${BUILD_NUMBER}"
         PATH = "$PATH:/var/lib/jenkins/.local/bin" // Add this line to include the directory in PATH
-        SCANNER_HOME= tool 'sonar-scanner'
+        SCANNER_HOME = tool 'sonar-scanner'
         SONAR_URL = "http://localhost:9000"
     }
 
@@ -30,7 +30,7 @@ pipeline {
 
         stage('Static Code Analysis') {
             steps {
-                withSonarQubeEnv(credentialsId: 'sonar') {
+                withSonarQubeEnv('sonar-server') { // Replace 'sonar-server' with the name of your SonarQube installation in Jenkins
                     sh '''
                     $SCANNER_HOME/bin/sonar-scanner \
                     -Dsonar.projectKey=CV-minikube \

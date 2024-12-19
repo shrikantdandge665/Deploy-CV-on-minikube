@@ -39,6 +39,7 @@ pipeline {
                     -Dsonar.python.coverage.reportPaths=coverage.xml \
                     -Dsonar.host.url=${SONAR_URL}
                     '''
+                }
             }
         }
 

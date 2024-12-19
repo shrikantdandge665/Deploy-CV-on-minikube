@@ -2,13 +2,12 @@ pipeline {
     agent {
         docker {
             image 'shrikantdandge7/flask-cv-agent:latest'
-            args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
+            args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
 
     environment {
         DOCKER_IMAGE = "shrikantdandge7/cv-minikube:${BUILD_NUMBER}"
-        SCANNER_HOME= tool 'sonar-scanner'
     }
 
     stages {
@@ -25,16 +24,19 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('Static Code Analysis') {
+            environment {
+                SONAR_URL = "http://localhost:9000"
+            }
             steps {
-                withSonarQubeEnv('sonar-server') { // 'sonar-server' should match your Jenkins configuration
+                withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_AUTH_TOKEN')]) {
                     sh '''
-                    $SCANNER_HOME/bin/sonar-scanner \
+                    sonar-scanner \
                     -Dsonar.projectKey=CV-minikube \
                     -Dsonar.projectName=CV-minikube \
                     -Dsonar.sources=. \
                     -Dsonar.python.coverage.reportPaths=coverage.xml \
-                    -Dsonar.host.url=$SONAR_HOST_URL \
+                    -Dsonar.host.url=${SONAR_URL} \
                     -Dsonar.login=$SONAR_AUTH_TOKEN
                     '''
                 }
@@ -50,7 +52,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                withDockerRegistry(url: 'https://index.docker.io/v1/', credentialsId: 'docker-cred') { // Replace with your registry URL and credentials ID
+                withDockerRegistry(url: 'https://index.docker.io/v1/', credentialsId: 'docker-cred') {
                     sh "docker build -t $DOCKER_IMAGE ."
                 }
             }
@@ -64,7 +66,7 @@ pipeline {
 
         stage('Docker Image Push') {
             steps {
-                withDockerRegistry(url: 'https://index.docker.io/v1/', credentialsId: 'docker-cred') { // Replace with your registry URL and credentials ID
+                withDockerRegistry(url: 'https://index.docker.io/v1/', credentialsId: 'docker-cred') {
                     sh "docker push $DOCKER_IMAGE"
                 }
             }

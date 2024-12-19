@@ -5,6 +5,9 @@ pipeline {
         PATH = "$PATH:/var/lib/jenkins/.local/bin"
         SCANNER_HOME = tool 'sonar-scanner'
         SONAR_URL = "http://localhost:9000"
+        GIT_REPO_NAME = "Deploy-CV-on-minikube"
+        GIT_USER_NAME = "shrikantdandge665"
+        GIT_USER_EMAIL = "shrikantdandge665@gmail.com"
     }
 
     stages {
@@ -75,31 +78,29 @@ pipeline {
         }
 
         stage('Update Deployment File') {
-        environment {
-            GIT_REPO_NAME = "Deploy-CV-on-minikube"
-            GIT_USER_NAME = "shrikantdandge665"
-            
-            }
-        steps {
-            withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                sh '''
-                    git config user.email "shrikantdandge665@gmail.com"
-                    git config user.name "Shrikant Dandge"  
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" manifests/deployment.yml
+            steps {
+                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                    # Set Git configuration
+                    git config user.email "${GIT_USER_EMAIL}"
+                    git config user.name "${GIT_USER_NAME}"
+                    
+                    # Update deployment.yml with the new image tag
+                    sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" manifests/deployment.yml
+                    
+                    # Commit and push changes
                     git add manifests/deployment.yml
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-                '''
+                    '''
+                }
             }
         }
-    }
 
-    stage('Cleanup Workspace') {
-        steps {
-        deleteDir() // This cleans up the workspace
+        stage('Cleanup Workspace') {
+            steps {
+                deleteDir() // This cleans up the workspace
+            }
         }
-    }
-    
     }
 }

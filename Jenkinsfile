@@ -17,22 +17,6 @@ pipeline {
             }
         }
 
-        stage('Skip Jenkins-triggered Builds') {
-            steps {
-                script {
-                    def authorEmail = sh(
-                        script: "git log -1 --pretty=format:'%ae'",
-                        returnStdout: true
-                    ).trim()
-                    if (authorEmail == "${GIT_USER_EMAIL}") {
-                        echo "Build skipped because it was triggered by Jenkins bot."
-                        currentBuild.result = 'SUCCESS'
-                        error("Stopping the pipeline because the commit was made by Jenkins bot.")
-                    }
-                }
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 sh 'pip install --user -r requirements.txt'
@@ -97,11 +81,16 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                     sh '''
+                    # Set Git configuration
                     git config user.email "${GIT_USER_EMAIL}"
                     git config user.name "${GIT_USER_NAME}"
+                    
+                    # Update deployment.yml with the new image tag
                     sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" manifests/deployment.yml
+                    
+                    # Commit and push changes
                     git add manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER} [ci skip]"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                     '''
                 }
@@ -110,7 +99,7 @@ pipeline {
 
         stage('Cleanup Workspace') {
             steps {
-                deleteDir()
+                deleteDir() // This cleans up the workspace
             }
         }
     }

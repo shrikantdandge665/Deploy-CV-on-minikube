@@ -90,12 +90,17 @@ pipeline {
                     
                     # Commit and push changes
                     git add manifests/deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER} [ci skip]"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                     '''
                 }
             }
         }
 
+        stage('Cleanup Workspace') {
+            steps {
+                deleteDir() // This cleans up the workspace
+            }
+        }
     }
 }

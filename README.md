@@ -3,7 +3,8 @@
 
 # CV Deployment on Minikube with CI/CD Pipeline
 
-![cv-minikube (1)](https://github.com/user-attachments/assets/66c032f4-cec6-45cf-9f4e-8aacfcbe6372)
+![cv-minikube (2)](https://github.com/user-attachments/assets/0930166d-5c7f-44c1-b0da-c9f4d8d3a8c5)
+
 
 
 

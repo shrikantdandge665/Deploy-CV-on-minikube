@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: cv-minikube
-        image: shrikantdandge7/cv-minikube:161
+        image: shrikantdandge7/cv-minikube:162
         ports:
         - containerPort: 5000

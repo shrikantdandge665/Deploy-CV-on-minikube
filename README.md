@@ -20,7 +20,7 @@
 8. [Metrics Monitoring](#metrics-monitoring)
 9. [Exposing Services](#exposing-services)
 10. [Troubleshooting](#troubleshooting)
-11. [License](#license)
+
 
 ---
 
@@ -249,8 +249,3 @@ minikube service cv-minikube-service
 
 ---
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
---- 

@@ -80,26 +80,19 @@ pipeline {
         stage('Update Deployment File') {
             steps {
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                    script {
-                        def changes = sh(script: 'git diff --name-only HEAD~1', returnStdout: true).trim()
-                        if (!changes.contains('manifests/deployment.yml')) {
-                            sh '''
-                            # Set Git configuration
-                            git config user.email "${GIT_USER_EMAIL}"
-                            git config user.name "${GIT_USER_NAME}"
-                            
-                            # Update deployment.yml with the new image tag
-                            sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" manifests/deployment.yml
-                            
-                            # Commit and push changes
-                            git add manifests/deployment.yml
-                            git commit -m "Update deployment image to version ${BUILD_NUMBER} [ci skip]"
-                            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-                            '''
-                        } else {
-                            echo "Skipping deployment update to avoid infinite loop."
-                        }
-                    }
+                    sh '''
+                    # Set Git configuration
+                    git config user.email "${GIT_USER_EMAIL}"
+                    git config user.name "${GIT_USER_NAME}"
+                    
+                    # Update deployment.yml with the new image tag
+                    sed -i "s|image: .*|image: ${DOCKER_IMAGE}|" manifests/deployment.yml
+                    
+                    # Commit and push changes
+                    git add manifests/deployment.yml
+                    git commit -m "Update deployment image to version ${BUILD_NUMBER} [ci skip]"
+                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                    '''
                 }
             }
         }
